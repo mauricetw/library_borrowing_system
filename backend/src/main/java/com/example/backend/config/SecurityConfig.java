@@ -43,6 +43,8 @@ public class SecurityConfig {
 
                 // 設定 API 的權限規則
                 .authorizeHttpRequests(auth -> auth
+                        // 允許所有人存取：Swagger UI 測試介面
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         // 允許所有人存取：註冊、登入 API
                         .requestMatchers("/api/auth/**").permitAll()
                         // 允許所有人存取：查詢書單 API
