@@ -1,85 +1,72 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+  <div id="app">
+    <nav v-if="isLoggedIn" class="navbar">
+      <div class="nav-brand">圖書借閱系統</div>
+      <div class="nav-links">
+        <router-link to="/">書籍列表</router-link>
+        <router-link to="/records">我的借閱紀錄</router-link>
+        <button @click="logout" class="logout-btn">登出</button>
+      </div>
+    </nav>
+    <main class="container">
+      <router-view></router-view>
+    </main>
+  </div>
 </template>
 
+<script setup>
+import { computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+
+const router = useRouter()
+const route = useRoute()
+
+// 簡單判斷是否登入 (檢查 localStorage 是否有 token)
+const isLoggedIn = computed(() => {
+  return !!localStorage.getItem('token') && route.path !== '/login'
+})
+
+const logout = () => {
+  localStorage.removeItem('token')
+  router.push('/login')
+}
+</script>
+
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  margin-bottom: 2rem;
 }
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.nav-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2c3e50;
 }
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
+.nav-links a {
+  margin-right: 1.5rem;
+  text-decoration: none;
+  color: #42b983;
+  font-weight: bold;
 }
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
+.nav-links a.router-link-active {
+  color: #2c3e50;
 }
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
+.logout-btn {
+  padding: 0.5rem 1rem;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
-
-nav a {
-  display: inline-block;
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
 }
 </style>
