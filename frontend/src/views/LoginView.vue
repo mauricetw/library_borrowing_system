@@ -51,23 +51,25 @@ const handleSubmit = async () => {
   errorMessage.value = ''
   try {
     if (isRegister.value) {
+      // 【修改這裡】欄位名稱改成 name 和 phone
       await axios.post('/api/auth/register', {
-        userName: form.value.userName,
-        phoneNumber: form.value.phoneNumber,
+        name: form.value.userName,
+        phone: form.value.phoneNumber,
         password: form.value.password
       })
       alert('註冊成功！請重新登入。')
       isRegister.value = false
     } else {
+      // 【修改這裡】欄位名稱改成 phone
       const response = await axios.post('/api/auth/login', {
-        phoneNumber: form.value.phoneNumber,
+        phone: form.value.phoneNumber,
         password: form.value.password
       })
       localStorage.setItem('token', response.data.token)
       router.push('/')
     }
   } catch (error) {
-    errorMessage.value = error.response?.data?.message || '發生錯誤，請檢查帳號密碼'
+    errorMessage.value = error.response?.data?.message || error.response?.data?.error || '發生錯誤，請檢查帳號密碼'
   } finally {
     loading.value = false
   }
